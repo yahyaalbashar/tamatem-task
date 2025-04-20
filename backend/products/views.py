@@ -20,7 +20,19 @@ class ListProductsAPIView(ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        """
+        Override the default queryset to support filtering by location.
+        """
+        queryset = Product.objects.all()
+        location = self.request.query_params.get('location', None)
 
+        # Apply location filter if provided
+        if location in ['JO', 'SA']:
+            queryset = queryset.filter(location=location)
+
+        return queryset
 
 class RetrieveProductAPIView(RetrieveAPIView):
     queryset = Product.objects.all()
